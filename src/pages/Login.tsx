@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 
 import { useState } from "react"
@@ -18,7 +16,7 @@ import {
   InputAdornment,
 } from "@mui/material"
 import { useNavigate, Link as RouterLink } from "react-router-dom"
-import { useAuthStore } from "../../store/authStore"
+import { useAuthStore } from "../store/authStore"
 import { Visibility, VisibilityOff, Email, Lock } from "@mui/icons-material"
 
 export default function LoginPage() {
