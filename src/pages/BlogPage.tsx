@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import {
   Box,
@@ -22,7 +22,6 @@ const api = axios.create({
 
 export default function BlogPage() {
   const { id } = useParams()
-  const navigate = useNavigate()
 
   const { data: blog, isLoading, isError } = useQuery({
     queryKey: ["blog", id],
