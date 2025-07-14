@@ -2,10 +2,7 @@ import {
   Edit,
   AccessTime,
   CalendarToday,
-  HeatPumpRounded,
-  HeartBroken,
   Share,
-  Check,
   ThumbUp,
 } from "@mui/icons-material";
 import { Stack, Avatar, Typography, Box, Button } from "@mui/material";

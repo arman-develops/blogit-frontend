@@ -12,7 +12,6 @@ import {
   Skeleton,
 } from "@mui/material";
 import { AccessTime } from "@mui/icons-material";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBlogStore } from "../../store/blogStore";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +20,6 @@ import api from "../../service/BlogApi";
 function BlogGrid() {
   const navigate = useNavigate();
   const { searchQuery } = useBlogStore();
-  const [loading] = useState(false);
 
   const getInitials = (name: string) => {
     return name
@@ -43,13 +41,10 @@ function BlogGrid() {
   const {
     data: blogs = [],
     isLoading,
-    isError,
-    error,
   } = useQuery({
     queryKey: ["blogs"],
     queryFn: async () => {
       const res = await api.get("/blogs");
-      // console.log(res.data);
 
       return res.data.data.blogs.filter((blog: any) => !blog.isDeleted);
     },
@@ -64,7 +59,7 @@ function BlogGrid() {
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Grid container spacing={4}>
           {[...Array(6)].map((_, index) => (
             <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={index}>
