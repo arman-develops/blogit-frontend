@@ -64,20 +64,6 @@ function AuthorInfo({ blog }: any) {
             Edit
           </Button>
         }
-        <Button
-          variant="outlined"
-          startIcon={<ThumbUp />}
-          size="small"
-        >
-          Like
-        </Button>
-        <Button
-          variant="outlined"
-          startIcon={<Share />}
-          size="small"
-        >
-          Share
-        </Button>
       </Stack>
     </Stack>
   );

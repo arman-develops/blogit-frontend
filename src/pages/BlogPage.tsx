@@ -11,6 +11,7 @@ import Loader from "../components/blog/Loader";
 import ErrorBlock from "../components/blog/ErrorBlock";
 import AuthorInfo from "../components/blog/AuthorInfo";
 import BlogContent from "../components/blog/BlogContent";
+import BlogInteractions from "../components/blog/BlogInteractions";
 
 export default function BlogPage() {
   const { blogID } = useParams<{ blogID: string }>();
@@ -57,6 +58,15 @@ export default function BlogPage() {
         <Divider sx={{ mb: 4 }} />
 
         <BlogContent blog={blog} />
+
+        <Divider sx={{ my: 4 }} />
+
+        <BlogInteractions
+          blogId={blogID || ""}
+          blogTitle={blog.title}
+          initialLikes={Math.floor(Math.random() * 50) + 1}
+          isLiked={Math.random() > 0.5}
+        />
       </Paper>
     </Container>
   );
