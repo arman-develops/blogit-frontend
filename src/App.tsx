@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Box } from "@mui/material";
-import Header from "./components/Header";
+import Header from "./layout/Header"
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -14,6 +14,7 @@ import EditBlogPage from "./pages/EditBlogPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { blogTheme } from "./theme/blogTheme";
+import Footer from "./layout/Footer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +73,7 @@ function App() {
                 />
               </Routes>
             </main>
+            <Footer />
           </Box>
         </Router>
       </ThemeProvider>
