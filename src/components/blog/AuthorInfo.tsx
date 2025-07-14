@@ -63,7 +63,6 @@ function AuthorInfo({ blog }: any) {
         <Button
           variant="outlined"
           startIcon={<ThumbUp />}
-          
           size="small"
         >
           Like
@@ -71,7 +70,6 @@ function AuthorInfo({ blog }: any) {
         <Button
           variant="outlined"
           startIcon={<Share />}
-          
           size="small"
         >
           Share
