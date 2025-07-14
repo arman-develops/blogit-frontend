@@ -10,8 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { getInitials } from "../../utils/getInitials";
 import { formatDate } from "../../utils/formatDate";
 import { formatReadTime } from "../../utils/formatReadTime";
+import { useAuthStore } from "../../store/authStore";
 
 function AuthorInfo({ blog }: any) {
+  const {user} = useAuthStore()
   const navigate = useNavigate();
   return (
     <Stack
@@ -52,14 +54,16 @@ function AuthorInfo({ blog }: any) {
       </Stack>
 
       <Stack direction="row" sx={{ gap: "10px" }}>
-        <Button
-          variant="outlined"
-          startIcon={<Edit />}
-          onClick={() => navigate(`/blogs/edit/${blog.blogID}`)}
-          size="small"
-        >
-          Edit
-        </Button>
+        {blog.userID == user?.id && 
+          <Button
+            variant="outlined"
+            startIcon={<Edit />}
+            onClick={() => navigate(`/blogs/edit/${blog.blogID}`)}
+            size="small"
+          >
+            Edit
+          </Button>
+        }
         <Button
           variant="outlined"
           startIcon={<ThumbUp />}
