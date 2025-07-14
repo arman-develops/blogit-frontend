@@ -1,25 +1,25 @@
-import { create } from "zustand"
+import { create } from "zustand";
 
 export interface Blog {
-  id: string
-  title: string
-  synopsis: string
-  content: string
-  featuredImageUrl: string
-  dateCreated: string
-  lastUpdated: string
-  isDeleted: boolean
-  authorId: string
-  authorName: string
+  id: string;
+  title: string;
+  synopsis: string;
+  content: string;
+  featuredImageUrl: string;
+  dateCreated: string;
+  lastUpdated: string;
+  isDeleted: boolean;
+  authorId: string;
+  authorName: string;
 }
 
 interface BlogState {
-  selectedBlog: Blog | null
-  setSelectedBlog: (blog: Blog | null) => void
-  searchQuery: string
-  setSearchQuery: (query: string) => void
-  selectedCategory: string
-  setSelectedCategory: (category: string) => void
+  selectedBlog: Blog | null;
+  setSelectedBlog: (blog: Blog | null) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
 }
 
 export const useBlogStore = create<BlogState>((set) => ({
@@ -29,4 +29,4 @@ export const useBlogStore = create<BlogState>((set) => ({
   setSearchQuery: (query) => set({ searchQuery: query }),
   selectedCategory: "all",
   setSelectedCategory: (category) => set({ selectedCategory: category }),
-}))
+}));

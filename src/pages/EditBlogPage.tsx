@@ -1,193 +1,131 @@
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Grid,
-  Paper,
-  Divider,
-  CircularProgress,
-} from "@mui/material"
-import { useParams, useNavigate } from "react-router-dom"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState, useEffect } from "react"
-import axios from "axios"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import rehypeHighlight from "rehype-highlight"
+import type React from "react";
 
-const api = axios.create({
-  baseURL: "/api",
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-})
+import { Box, Grid, Container } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import api from "../service/BlogApi";
+import EditHeader from "../components/blog_editor/EditorHeader";
+import EditForm from "../components/blog_editor/EditorForm";
+import EditorPreview from "../components/blog_editor/EditorPreview";
+import EditError from "../components/blog_editor/EditError";
+import EditorLoader from "../components/blog_editor/EditorLoader";
+import EditorError from "../components/blog_editor/EditorError";
 
 export default function EditBlogPage() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [tabValue, setTabValue] = useState(0);
   const [formData, setFormData] = useState({
-    featuredImageUrl: "",
+    featuredImage: "",
     title: "",
     synopsis: "",
     content: "",
-  })
+  });
 
-  const { data: blogData, isLoading, isError } = useQuery({
+  const {
+    data: blogData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["blog", id],
     queryFn: async () => {
-      const res = await api.get(`/blogs/${id}`)
-      if (res.data.isDeleted) throw new Error("Deleted")
-      return res.data
+      const res = await api.get(`/blogs/${id}`);
+      if (res.data.isDeleted) throw new Error("Blog has been deleted");
+      return res.data;
     },
-  })
+    enabled: !!id,
+  });
 
   useEffect(() => {
     if (blogData) {
       setFormData({
-        featuredImageUrl: blogData.featuredImageUrl || "",
+        featuredImage: blogData.featuredImage || "",
         title: blogData.title || "",
         synopsis: blogData.synopsis || "",
         content: blogData.content || "",
-      })
+      });
     }
-  }, [blogData])
+  }, [blogData]);
 
   const updateBlogMutation = useMutation({
     mutationFn: async () => {
-      return api.patch(`/blogs/${id}`, formData)
+      return api.patch(`/blogs/${id}`, formData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["blog", id] })
-      queryClient.invalidateQueries({ queryKey: ["userBlogs"] })
-      queryClient.invalidateQueries({ queryKey: ["blogs"] })
-      navigate(`/blogs/${id}`)
+      queryClient.invalidateQueries({ queryKey: ["blog", id] });
+      queryClient.invalidateQueries({ queryKey: ["userBlogs"] });
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      navigate(`/blogs/${id}`);
     },
     onError: (err: any) => {
-      alert(err?.response?.data?.message || "Failed to update blog.")
+      console.error(
+        "Error updating blog:",
+        err?.response?.data?.message || "Failed to update blog.",
+      );
     },
-  })
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    updateBlogMutation.mutate()
-  }
+    e.preventDefault();
+    updateBlogMutation.mutate();
+  };
 
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const isFormValid = formData.title && formData.synopsis && formData.content;
+
+  // Loading State
   if (isLoading) {
-    return (
-      <Box p={4} display="flex" justifyContent="center">
-        <CircularProgress />
-      </Box>
-    )
+    return <EditorLoader />;
   }
 
+  // Error State
   if (isError || !blogData) {
-    return (
-      <Box p={4}>
-        <Typography variant="h4" color="error">
-          Blog Not Found
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 2 }}>
-          This blog may have been deleted or does not exist.
-        </Typography>
-      </Box>
-    )
+    return <EditorError />;
   }
 
   return (
-    <Box p={3}>
-      <Typography variant="h4" gutterBottom>
-        Edit Blog
-      </Typography>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        py: 4,
+      }}
+    >
+      <Container maxWidth="lg">
+        <EditHeader blogData={blogData} id={id} />
 
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid size={{xs: 12}}>
-            <TextField
-              label="Featured Image URL"
-              name="featuredImageUrl"
-              fullWidth
-              value={formData.featuredImageUrl}
-              onChange={handleChange}
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={4}>
+            <EditForm
+              formData={formData}
+              setFormData={setFormData}
+              handleChange={handleChange}
+              updateBlogMutation={updateBlogMutation}
+              id={id}
+              isFormValid={isFormValid}
+            />
+
+            <EditorPreview
+              tabValue={tabValue}
+              handleTabChange={handleTabChange}
+              formData={formData}
             />
           </Grid>
+        </form>
 
-          <Grid size={{xs: 12}}>
-            <TextField
-              label="Title"
-              name="title"
-              fullWidth
-              required
-              value={formData.title}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid size={{xs: 12}}>
-            <TextField
-              label="Synopsis"
-              name="synopsis"
-              fullWidth
-              multiline
-              rows={2}
-              required
-              value={formData.synopsis}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid size={{xs:12}}>
-            <TextField
-              label="Content (Markdown supported)"
-              name="content"
-              fullWidth
-              multiline
-              rows={10}
-              required
-              value={formData.content}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid size={{xs: 12}}>
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={updateBlogMutation.isPending}
-            >
-              {updateBlogMutation.isPending ? "Updating..." : "Update Blog"}
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-
-      {formData.content && (
-        <>
-          <Divider sx={{ my: 4 }} />
-          <Typography variant="h5" gutterBottom>
-            Live Preview
-          </Typography>
-          <Paper sx={{ p: 3 }}>
-            <ReactMarkdown
-              children={formData.content}
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeHighlight]}
-              components={{
-                h1: ({ node, ...props }) => <Typography variant="h4" gutterBottom {...props} />,
-                h2: ({ node, ...props }) => <Typography variant="h5" gutterBottom {...props} />,
-                p: ({ node, ...props }) => <Typography variant="body1" paragraph {...props} />,
-              }}
-            />
-          </Paper>
-        </>
-      )}
+        <EditError updateBlogMutation={updateBlogMutation} />
+      </Container>
     </Box>
-  )
+  );
 }

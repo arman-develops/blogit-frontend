@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,33 +15,33 @@ import {
   IconButton,
   Container,
   Fade,
-} from "@mui/material"
-import { useNavigate } from "react-router-dom"
-import { useAuthStore } from "../store/authStore"
-import { Create, Article, Person, Logout } from "@mui/icons-material"
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import { Create, Article, Person, Logout } from "@mui/icons-material";
 
 export default function Header() {
-  const navigate = useNavigate()
-  const { user, logout, isAuthenticated } = useAuthStore()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const navigate = useNavigate();
+  const { user, logout, isAuthenticated } = useAuthStore();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   const handleLogout = () => {
-    logout()
-    handleClose()
-    navigate("/")
-  }
+    logout();
+    handleClose();
+    navigate("/");
+  };
 
   const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
-  }
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  };
 
   return (
     <AppBar
@@ -92,7 +92,7 @@ export default function Header() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              BlogSpace
+              Blogit
             </Typography>
           </Box>
 
@@ -108,14 +108,17 @@ export default function Header() {
                   mr: 2,
                 }}
               >
-                Welcome back, {user.firstName}! 👋
+                Welcome back, {user.firstName}!
               </Typography>
 
               <Button
                 color="inherit"
                 startIcon={<Article />}
                 onClick={() => navigate("/blogs")}
-                sx={{ color: "text.primary", "&:hover": { bgcolor: "rgba(99, 102, 241, 0.08)" } }}
+                sx={{
+                  color: "text.primary",
+                  "&:hover": { bgcolor: "rgba(99, 102, 241, 0.08)" },
+                }}
               >
                 Explore
               </Button>
@@ -125,10 +128,12 @@ export default function Header() {
                 startIcon={<Create />}
                 onClick={() => navigate("/blogs/new")}
                 sx={{
-                  background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                  background:
+                    "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                   boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)",
                   "&:hover": {
-                    background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                    background:
+                      "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
                     boxShadow: "0 6px 20px rgba(99, 102, 241, 0.4)",
                   },
                 }}
@@ -141,7 +146,8 @@ export default function Header() {
                   sx={{
                     width: 36,
                     height: 36,
-                    background: "linear-gradient(135deg, #f59e0b 0%, #f97316 100%)",
+                    background:
+                      "linear-gradient(135deg, #f59e0b 0%, #f97316 100%)",
                     fontSize: "0.875rem",
                     fontWeight: 600,
                   }}
@@ -154,27 +160,35 @@ export default function Header() {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-                TransitionComponent={Fade}
-                PaperProps={{
-                  sx: {
-                    mt: 1,
-                    borderRadius: 3,
-                    boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-                    minWidth: 180,
+                slotProps={{
+                  transition: {
+                    component: Fade,
+                  },
+                  paper: {
+                    sx: {
+                      mt: 1,
+                      borderRadius: 1,
+                      boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+                      minWidth: 180,
+                      background: "rgba(255, 255, 255)",
+                    },
                   },
                 }}
               >
                 <MenuItem
                   onClick={() => {
-                    navigate("/profile")
-                    handleClose()
+                    navigate("/profile");
+                    handleClose();
                   }}
                   sx={{ py: 1.5 }}
                 >
                   <Person sx={{ mr: 2, fontSize: 20 }} />
                   Profile
                 </MenuItem>
-                <MenuItem onClick={handleLogout} sx={{ py: 1.5, color: "error.main" }}>
+                <MenuItem
+                  onClick={handleLogout}
+                  sx={{ py: 1.5, color: "error.main" }}
+                >
                   <Logout sx={{ mr: 2, fontSize: 20 }} />
                   Logout
                 </MenuItem>
@@ -185,7 +199,10 @@ export default function Header() {
               <Button
                 color="inherit"
                 onClick={() => navigate("/login")}
-                sx={{ color: "text.primary", "&:hover": { bgcolor: "rgba(99, 102, 241, 0.08)" } }}
+                sx={{
+                  color: "text.primary",
+                  "&:hover": { bgcolor: "rgba(99, 102, 241, 0.08)" },
+                }}
               >
                 Sign In
               </Button>
@@ -193,10 +210,12 @@ export default function Header() {
                 variant="contained"
                 onClick={() => navigate("/signup")}
                 sx={{
-                  background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                  background:
+                    "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                   boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)",
                   "&:hover": {
-                    background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                    background:
+                      "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
                     boxShadow: "0 6px 20px rgba(99, 102, 241, 0.4)",
                   },
                 }}
@@ -208,5 +227,5 @@ export default function Header() {
         </Toolbar>
       </Container>
     </AppBar>
-  )
+  );
 }

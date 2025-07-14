@@ -1,6 +1,6 @@
-import {Container} from "@mui/material"
-import BlogHeader from "../components/blogs/BlogHeader"
-import BlogGrid from "../components/blogs/BlogGrid"
+import { Container } from "@mui/material";
+import BlogHeader from "../components/blogs/BlogHeader";
+import BlogGrid from "../components/blogs/BlogGrid";
 
 export default function BlogsPage() {
   return (
@@ -8,5 +8,5 @@ export default function BlogsPage() {
       <BlogHeader />
       <BlogGrid />
     </Container>
-  )
+  );
 }

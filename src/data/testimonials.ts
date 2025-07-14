@@ -1,20 +1,23 @@
 export const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "Tech Writer",
-      content: "Blogit has transformed how I share my ideas. The interface is intuitive and beautiful!",
-      avatar: "SC",
-    },
-    {
-      name: "Marcus Johnson",
-      role: "Content Creator",
-      content: "The markdown support and clean design make writing a joy. Highly recommended!",
-      avatar: "MJ",
-    },
-    {
-      name: "Elena Rodriguez",
-      role: "Blogger",
-      content: "Finally, a blogging platform that focuses on the writing experience. Love it!",
-      avatar: "ER",
-    },
-]
+  {
+    name: "Achieng Otieno",
+    role: "Lifestyle Blogger – Nairobi",
+    content:
+      "BlogIt has made it so easy to share my travel stories and recipes. The markdown editor is my favorite feature!",
+    avatar: "AO",
+  },
+  {
+    name: "Brian Kaggwa",
+    role: "Tech Reviewer – Kampala",
+    content:
+      "As a content creator in Uganda, BlogIt gives me the freedom to write cleanly and publish fast. I’m hooked.",
+    avatar: "BK",
+  },
+  {
+    name: "Zahara Mohamed",
+    role: "Poet & Writer – Mombasa",
+    content:
+      "Simple, elegant, and just works. BlogIt feels like it was made for storytellers like me.",
+    avatar: "ZM",
+  },
+];

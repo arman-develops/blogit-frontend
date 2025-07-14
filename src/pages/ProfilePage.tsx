@@ -1,25 +1,18 @@
-import {
-  Box,
-  Typography,
-  Divider
-} from '@mui/material'
-import UserInfo from "../components/profile/UserInfo"
-import UserBlogs from "../components/profile/UserBlogs"
+import { Box, Divider } from "@mui/material";
+import UserInfo from "../components/profile/UserInfo";
+import UserBlogs from "../components/profile/UserBlogs";
+import ProfileLink from "../components/profile/ProfileLink";
 
 export default function ProfilePage() {
-
   return (
     <Box p={3}>
-        <Typography variant="h3" gutterBottom>
-            My Profile
-        </Typography>
+      <ProfileLink />
 
-        <UserInfo />
+      <UserBlogs />
 
-        <Divider sx={{ my: 4 }} />
+      <Divider sx={{ my: 4 }} />
 
-        <UserBlogs />
-
+      <UserInfo />
     </Box>
-  )
+  );
 }

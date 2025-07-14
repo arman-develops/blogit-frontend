@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Container,
   Paper,
@@ -17,10 +17,22 @@ import {
   IconButton,
   InputAdornment,
   Grid,
-} from "@mui/material"
-import { useNavigate, Link as RouterLink } from "react-router-dom"
-import { useAuthStore } from "../store/authStore"
-import { Visibility, VisibilityOff, Person, Email, Lock, AccountCircle } from "@mui/icons-material"
+} from "@mui/material";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import {
+  Visibility,
+  VisibilityOff,
+  Person,
+  Email,
+  Lock,
+  AccountCircle,
+} from "@mui/icons-material";
+import { useMutation } from "@tanstack/react-query";
+import type { SignupData } from "../types/signup.types";
+import api from "../service/BlogApi";
+import { jwtDecode } from "jwt-decode";
+import type { DecodedToken } from "../types/decodedToken.type";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -29,44 +41,52 @@ export default function SignupPage() {
     username: "",
     email: "",
     password: "",
-  })
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const { login } = useAuthStore()
-  const navigate = useNavigate()
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
+
+  const signupMutation = useMutation({
+    mutationFn: async (data: SignupData) => {
+      const res = await api.post("/auth/register", data);
+      const token = res.data.data.jwt_token;
+      const decoded = jwtDecode<DecodedToken>(token);
+
+      const user = {
+        id: decoded.userID,
+        username: decoded.username,
+        email: decoded.email,
+        firstName: decoded.firstName,
+        lastName: decoded.lastName,
+      };
+      return { user, token };
+    },
+    onSuccess: ({ user, token }) => {
+      login(user, token);
+      navigate("/blogs");
+    },
+    onError: (err: any) => {
+      console.error(err);
+      setError("Sign up failed");
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    try {
-      // Replace with actual API call using React Query
-      const mockUser = {
-        id: Date.now().toString(),
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        username: formData.username,
-        email: formData.email,
-      }
-      const mockToken = "mock-jwt-token"
-
-      login(mockUser, mockToken)
-      navigate("/blogs")
-    } catch (err) {
-      setError("User with this email or username already exists")
-    } finally {
-      setLoading(false)
-    }
-  }
+    signupMutation.mutate(formData);
+  };
 
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
@@ -74,10 +94,11 @@ export default function SignupPage() {
         elevation={0}
         sx={{
           p: 6,
-          borderRadius: 4,
+          borderRadius: 1,
           border: "1px solid",
           borderColor: "grey.200",
-          background: "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.95) 100%)",
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.95) 100%)",
           backdropFilter: "blur(10px)",
         }}
       >
@@ -118,7 +139,7 @@ export default function SignupPage() {
         <Box component="form" onSubmit={handleSubmit}>
           <Stack spacing={3}>
             <Grid container spacing={2}>
-              <Grid size={{xs:6}}>
+              <Grid size={{ xs: 6 }}>
                 <TextField
                   fullWidth
                   label="First Name"
@@ -126,21 +147,23 @@ export default function SignupPage() {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Person color="action" />
-                      </InputAdornment>
-                    ),
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person color="action" />
+                        </InputAdornment>
+                      ),
+                    },
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: 2,
+                      borderRadius: 1,
                     },
                   }}
                 />
               </Grid>
-              <Grid size={{xs: 6}}>
+              <Grid size={{ xs: 6 }}>
                 <TextField
                   fullWidth
                   label="Last Name"
@@ -150,7 +173,7 @@ export default function SignupPage() {
                   required
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: 2,
+                      borderRadius: 1,
                     },
                   }}
                 />
@@ -164,16 +187,18 @@ export default function SignupPage() {
               value={formData.username}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccountCircle color="action" />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle color="action" />
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
+                  borderRadius: 1,
                 },
               }}
             />
@@ -186,16 +211,18 @@ export default function SignupPage() {
               value={formData.email}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Email color="action" />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Email color="action" />
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
+                  borderRadius: 1,
                 },
               }}
             />
@@ -208,23 +235,28 @@ export default function SignupPage() {
               value={formData.password}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock color="action" />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Lock color="action" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
+                  borderRadius: 1,
                 },
               }}
             />
@@ -239,11 +271,12 @@ export default function SignupPage() {
                 py: 1.5,
                 fontSize: "1rem",
                 fontWeight: 600,
-                borderRadius: 2,
+                borderRadius: 1,
                 background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                 boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)",
                 "&:hover": {
-                  background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                  background:
+                    "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
                   boxShadow: "0 6px 20px rgba(99, 102, 241, 0.4)",
                 },
                 "&:disabled": {
@@ -283,5 +316,5 @@ export default function SignupPage() {
         </Box>
       </Paper>
     </Container>
-  )
+  );
 }

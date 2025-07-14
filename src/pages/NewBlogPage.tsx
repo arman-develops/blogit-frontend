@@ -1,142 +1,91 @@
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Grid,
-  Paper,
-  Divider,
-} from "@mui/material"
-import { useState } from "react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useNavigate } from "react-router-dom"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import rehypeHighlight from "rehype-highlight"
-import api from '../service/BlogApi'
+import type React from "react";
+
+import { Box, Grid, Container } from "@mui/material";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import api from "../service/BlogApi";
+import NewBlogHeader from "../components/new_blog/Header";
+import NewBlogForm from "../components/new_blog/NewBlogForm";
+import BlogPreview from "../components/new_blog/BlogPreview";
+import ErrorAlert from "../components/new_blog/ErrorAlert";
 
 export default function NewBlogPage() {
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
-
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [tabValue, setTabValue] = useState(0);
   const [formData, setFormData] = useState({
-    featuredImageUrl: "",
+    featuredImage: "",
     title: "",
     synopsis: "",
     content: "",
-  })
+  });
 
   const createBlogMutation = useMutation({
     mutationFn: async () => {
-      const res = await api.post("/blogs", formData)
-      return res.data
+      const res = await api.post("/blogs", formData);
+      return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["blogs"] })
-      navigate("/blogs")
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      navigate("/blogs");
     },
     onError: (err: any) => {
-      alert(err?.response?.data?.message || "Something went wrong.")
+      console.error(
+        "Error creating blog:",
+        err?.response?.data?.message || "Something went wrong.",
+      );
     },
-  })
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    createBlogMutation.mutate()
-  }
+    e.preventDefault();
+    createBlogMutation.mutate();
+  };
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const isFormValid = formData.title && formData.synopsis && formData.content;
 
   return (
-    <Box p={3}>
-      <Typography variant="h4" gutterBottom>
-        Create New Blog
-      </Typography>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        py: 4,
+      }}
+    >
+      <Container maxWidth="lg">
+        <NewBlogHeader />
 
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid size={{xs:12}}>
-            <TextField
-              label="Featured Image URL"
-              name="featuredImageUrl"
-              fullWidth
-              value={formData.featuredImageUrl}
-              onChange={handleChange}
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={4}>
+            <NewBlogForm
+              formData={formData}
+              setFormData={setFormData}
+              handleChange={handleChange}
+              createBlogMutation={createBlogMutation}
+              isFormValid={isFormValid}
+            />
+
+            <BlogPreview
+              tabValue={tabValue}
+              handleTabChange={handleTabChange}
+              formData={formData}
             />
           </Grid>
+        </form>
 
-          <Grid size={{xs: 12}}>
-            <TextField
-              label="Title"
-              name="title"
-              fullWidth
-              required
-              value={formData.title}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid size={{xs: 12}}>
-            <TextField
-              label="Synopsis"
-              name="synopsis"
-              fullWidth
-              multiline
-              rows={2}
-              required
-              value={formData.synopsis}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid size={{xs:12}}>
-            <TextField
-              label="Content (Markdown supported)"
-              name="content"
-              fullWidth
-              multiline
-              rows={10}
-              required
-              value={formData.content}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid size={{xs:12}}>
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={createBlogMutation.isPending}
-            >
-              {createBlogMutation.isPending ? "Submitting..." : "Create Blog"}
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-
-      {formData.content && (
-        <>
-          <Divider sx={{ my: 4 }} />
-          <Typography variant="h5" gutterBottom>
-            Live Preview
-          </Typography>
-          <Paper sx={{ p: 3 }}>
-            <ReactMarkdown
-              children={formData.content}
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeHighlight]}
-              components={{
-                h1: ({ node, ...props }) => <Typography variant="h4" gutterBottom {...props} />,
-                h2: ({ node, ...props }) => <Typography variant="h5" gutterBottom {...props} />,
-                p: ({ node, ...props }) => <Typography variant="body1" paragraph {...props} />,
-              }}
-            />
-          </Paper>
-        </>
-      )}
+        <ErrorAlert createBlogMutation={createBlogMutation} />
+      </Container>
     </Box>
-  )
+  );
 }
