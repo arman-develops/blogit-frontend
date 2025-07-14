@@ -36,7 +36,7 @@ function UserBlogs() {
 
   const token = useAuthStore((state) => state.token);
 
-  const { data: userBlogs, isLoading } = useQuery({
+  const { data: userBlogs = [], isLoading } = useQuery({
     queryKey: ["userBlogs"],
     queryFn: async () => {
       const res = await api.get("/user/blogs");

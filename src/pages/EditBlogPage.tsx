@@ -25,15 +25,15 @@ export default function EditBlogPage() {
   });
 
   const {
-    data: blogData,
+    data: blogData = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["blog", id],
+    queryKey: ["blogData", id],
     queryFn: async () => {
       const res = await api.get(`/blogs/${id}`);
       if (res.data.isDeleted) throw new Error("Blog has been deleted");
-      return res.data;
+      return res.data.data.blog;
     },
     enabled: !!id,
   });
