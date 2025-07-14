@@ -24,8 +24,6 @@ export default function BlogPage() {
     queryKey: ["blog", blogID],
     queryFn: async () => {
       const res = await api.get(`/blogs/${blogID}`);
-      console.log(res.data.data.blog);
-
       if (res.data.data.blog.isDeleted) {
         throw new Error("Blog has been deleted");
       }

@@ -44,9 +44,12 @@ function BlogGrid() {
   } = useQuery({
     queryKey: ["blogs"],
     queryFn: async () => {
-      const res = await api.get("/blogs");
-
-      return res.data.data.blogs.filter((blog: any) => !blog.isDeleted);
+      try {
+        const res = await api.get("/blogs");
+        return res.data.data.blogs.filter((blog: any) => !blog.isDeleted);
+      } catch(err:any) {
+        console.error(err)
+      }
     },
   });
 

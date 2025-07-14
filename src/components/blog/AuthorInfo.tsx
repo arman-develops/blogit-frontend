@@ -2,8 +2,6 @@ import {
   Edit,
   AccessTime,
   CalendarToday,
-  Share,
-  ThumbUp,
 } from "@mui/icons-material";
 import { Stack, Avatar, Typography, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";

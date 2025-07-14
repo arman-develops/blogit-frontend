@@ -112,7 +112,7 @@ export default function Footer() {
           <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems="center" spacing={2}>
             <Stack direction="row" alignItems="center" spacing={1}>
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                © {currentYear} BlogSpace. Made with
+                © {currentYear} BlogIt. Made with
               </Typography>
               <Favorite sx={{ fontSize: 16, color: "#f87171" }} />
               <Typography variant="body2" sx={{ opacity: 0.8 }}>

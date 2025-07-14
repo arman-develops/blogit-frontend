@@ -73,19 +73,21 @@ export default function SignupPage() {
     onSuccess: ({ user, token }) => {
       login(user, token);
       navigate("/blogs");
+      setLoading(false)
     },
     onError: (err: any) => {
       console.error(err);
       setError("Sign up failed");
+      setLoading(false)
     },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    setLoading(true)
 
     signupMutation.mutate(formData);
+    setError("");
   };
 
   return (
@@ -114,7 +116,7 @@ export default function SignupPage() {
               fontWeight: 800,
             }}
           >
-            Join BlogSpace
+            Join BlogIt
           </Typography>
           <Typography variant="body1" color="text.secondary">
             Create your account and start sharing your stories

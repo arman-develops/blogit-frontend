@@ -3,6 +3,7 @@ import { useAuthStore } from "../store/authStore";
 
 const api = axios.create({
   baseURL: "https://blog-it-backend-j3e2.onrender.com/api",
+  // baseURL: "http://localhost:3500/api",
   headers: {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
