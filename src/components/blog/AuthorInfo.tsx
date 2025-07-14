@@ -63,7 +63,7 @@ function AuthorInfo({ blog }: any) {
         <Button
           variant="outlined"
           startIcon={<ThumbUp />}
-          onClick={() => navigate(`/blogs/edit/${blog.blogID}`)}
+          
           size="small"
         >
           Like
@@ -71,7 +71,7 @@ function AuthorInfo({ blog }: any) {
         <Button
           variant="outlined"
           startIcon={<Share />}
-          onClick={() => navigate(`/blogs/edit/${blog.blogID}`)}
+          
           size="small"
         >
           Share
